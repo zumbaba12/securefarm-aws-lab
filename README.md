@@ -36,6 +36,11 @@ Claude should create the application under `app/`. Supporting lab material shoul
 - `handoff/`: prompts, implementation summaries, and reviews.
 - `attacks/`: manual attack notes and safe proof-of-concept payloads.
 - `aws/`: deployment and monitoring notes or IaC, when added.
+- `deploy/`: EC2 runtime templates for Nginx, systemd, and environment config.
+
+## Deployment
+
+The current EC2 deployment runbook is [docs/ec2-deploy.md](docs/ec2-deploy.md).
 
 ## Safety Boundary
 

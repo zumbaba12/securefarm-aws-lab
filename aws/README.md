@@ -2,6 +2,8 @@
 
 This directory is reserved for deployment and monitoring notes or infrastructure code.
 
+For the current manual EC2 deployment process, see [../docs/ec2-deploy.md](../docs/ec2-deploy.md).
+
 Initial AWS topics to document later:
 
 - Account and region assumptions.

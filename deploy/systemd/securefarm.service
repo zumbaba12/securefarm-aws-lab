@@ -1,0 +1,16 @@
+[Unit]
+Description=SecureFarm API
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/securefarm/app/server
+EnvironmentFile=/etc/securefarm.env
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=5
+User=ubuntu
+Group=ubuntu
+
+[Install]
+WantedBy=multi-user.target
