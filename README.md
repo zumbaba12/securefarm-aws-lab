@@ -37,6 +37,8 @@ Claude should create the application under `app/`. Supporting lab material shoul
 - `attacks/`: manual attack notes and safe proof-of-concept payloads.
 - `aws/`: deployment and monitoring notes or IaC, when added.
 - `deploy/`: EC2 runtime templates for Nginx, systemd, and environment config.
+  The current EC2 layout assumes the Git repository is cloned to
+  `/opt/securefarm/securefarm-aws-lab`.
 
 ## Deployment
 

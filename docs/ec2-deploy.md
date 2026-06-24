@@ -55,13 +55,13 @@ node -v
 npm -v
 ```
 
-Clone the repo:
+Clone the repo. These commands create the parent directory `/opt/securefarm` and clone the Git repository into `/opt/securefarm/securefarm-aws-lab`:
 
 ```bash
 sudo mkdir -p /opt/securefarm
 sudo chown ubuntu:ubuntu /opt/securefarm
-git clone https://github.com/zumbaba12/securefarm-aws-lab.git /opt/securefarm
-cd /opt/securefarm
+git clone https://github.com/zumbaba12/securefarm-aws-lab.git /opt/securefarm/securefarm-aws-lab
+cd /opt/securefarm/securefarm-aws-lab
 git checkout main
 ```
 
@@ -76,7 +76,7 @@ git checkout implement-securefarm-website
 Install dependencies and build the frontend:
 
 ```bash
-cd /opt/securefarm/app
+cd /opt/securefarm/securefarm-aws-lab/app
 npm ci
 npm run build
 ```
@@ -94,7 +94,7 @@ SECUREFARM_DB=/var/lib/securefarm/securefarm.sqlite npm run seed
 Install the environment file:
 
 ```bash
-sudo cp /opt/securefarm/deploy/securefarm.env.example /etc/securefarm.env
+sudo cp /opt/securefarm/securefarm-aws-lab/deploy/securefarm.env.example /etc/securefarm.env
 sudo chmod 640 /etc/securefarm.env
 ```
 
@@ -114,7 +114,7 @@ SECUREFARM_DB=/var/lib/securefarm/securefarm.sqlite
 Install and start the systemd service:
 
 ```bash
-sudo cp /opt/securefarm/deploy/systemd/securefarm.service /etc/systemd/system/securefarm.service
+sudo cp /opt/securefarm/securefarm-aws-lab/deploy/systemd/securefarm.service /etc/systemd/system/securefarm.service
 sudo systemctl daemon-reload
 sudo systemctl enable securefarm
 sudo systemctl start securefarm
@@ -132,7 +132,7 @@ curl -i http://127.0.0.1:4000/api/health
 Install the Nginx site:
 
 ```bash
-sudo cp /opt/securefarm/deploy/nginx/securefarm.conf /etc/nginx/sites-available/securefarm
+sudo cp /opt/securefarm/securefarm-aws-lab/deploy/nginx/securefarm.conf /etc/nginx/sites-available/securefarm
 sudo ln -sf /etc/nginx/sites-available/securefarm /etc/nginx/sites-enabled/securefarm
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t
@@ -174,17 +174,11 @@ sudo tail -f /var/log/nginx/access.log /var/log/nginx/error.log
 
 ## Update Deployment
 
-After pushing a new commit:
+After pushing a new commit, run the deployment script from the EC2 instance:
 
 ```bash
-cd /opt/securefarm
-git pull
-cd app
-npm ci
-npm run build
-sudo systemctl restart securefarm
-sudo nginx -t
-sudo systemctl reload nginx
+cd /opt/securefarm/securefarm-aws-lab
+bash deploy/deploy.sh
 ```
 
 Run smoke checks again:
@@ -199,10 +193,10 @@ curl -i http://3.25.94.255/api/health
 Use Git to return to a known commit:
 
 ```bash
-cd /opt/securefarm
+cd /opt/securefarm/securefarm-aws-lab
 git log --oneline -5
 git checkout <known-good-commit>
-cd app
+cd /opt/securefarm/securefarm-aws-lab/app
 npm ci
 npm run build
 sudo systemctl restart securefarm
