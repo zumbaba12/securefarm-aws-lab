@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+dist/
+build/
+.vite/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Databases and local state
+*.sqlite
+*.sqlite3
+*.db
+storage/
+tmp/
+
+# Logs
+*.log
+logs/
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
