@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/securefarm/app/server
+WorkingDirectory=/opt/securefarm/securefarm-aws-lab/app/server
 EnvironmentFile=/etc/securefarm.env
 ExecStart=/usr/bin/npm start
 Restart=always
