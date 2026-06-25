@@ -172,6 +172,35 @@ Nginx logs:
 sudo tail -f /var/log/nginx/access.log /var/log/nginx/error.log
 ```
 
+## CloudWatch Monitoring
+
+CloudWatch Agent has been installed on the EC2 instance. It is configured to
+publish Nginx access logs, Nginx error logs, and system auth logs to CloudWatch
+Logs.
+
+Current log groups:
+
+- `/securefarm/nginx/access`
+- `/securefarm/nginx/error`
+- `/securefarm/system/auth`
+
+CloudWatch metrics also show EC2 memory and disk usage from the agent.
+
+## CloudWatch Alarm Testing
+
+CPU alarm notification testing was completed using an SNS notification test and
+a CPU stress test on the EC2 instance:
+
+```bash
+stress --cpu 1 --timeout 720
+```
+
+The alarm notification was sent through SNS and confirmed received by email.
+
+The status check alarm was not tested to avoid intentionally breaking the EC2
+instance. It is configured to notify through the same SNS topic when
+`StatusCheckFailed >= 1`.
+
 ## Update Deployment
 
 After pushing a new commit, run the deployment script from the EC2 instance:

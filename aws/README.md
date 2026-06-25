@@ -4,6 +4,9 @@ This directory is reserved for deployment and monitoring notes or infrastructure
 
 For the current manual EC2 deployment process, see [../docs/ec2-deploy.md](../docs/ec2-deploy.md).
 
+For report evidence screenshots and redaction guidance, see
+[../docs/report-screenshots.md](../docs/report-screenshots.md).
+
 Initial AWS topics to document later:
 
 - Account and region assumptions.
