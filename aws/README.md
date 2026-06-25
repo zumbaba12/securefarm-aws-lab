@@ -7,6 +7,8 @@ For the current manual EC2 deployment process, see [../docs/ec2-deploy.md](../do
 For report evidence screenshots and redaction guidance, see
 [../docs/report-screenshots.md](../docs/report-screenshots.md).
 
+For CloudTrail setup and test evidence, see [cloudtrail.md](cloudtrail.md).
+
 Initial AWS topics to document later:
 
 - Account and region assumptions.
@@ -14,7 +16,6 @@ Initial AWS topics to document later:
 - EC2, ECS, Elastic Beanstalk, or App Runner choice.
 - Database choice.
 - CloudWatch logs and alarms.
-- CloudTrail.
 - GuardDuty.
 - Inspector.
 - WAF and ALB access logs if used.
