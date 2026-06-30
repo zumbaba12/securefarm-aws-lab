@@ -25,3 +25,24 @@ export async function apiFetch(path, options = {}) {
   }
   return body;
 }
+
+// Multipart upload helper. Lets the browser set the multipart content-type
+// (with boundary) itself; we only attach the bearer token.
+export async function apiUpload(path, file) {
+  const headers = {};
+  const token = getToken();
+  if (token) headers.authorization = `Bearer ${token}`;
+
+  const form = new FormData();
+  form.append('file', file);
+
+  const res = await fetch(path, { method: 'POST', body: form, headers });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) {
+    const message = (body && body.error) || `Upload failed (${res.status})`;
+    const error = new Error(message);
+    error.status = res.status;
+    throw error;
+  }
+  return body;
+}

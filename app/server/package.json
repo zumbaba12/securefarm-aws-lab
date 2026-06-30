@@ -11,8 +11,10 @@
     "test": "node --test"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.624.0",
     "better-sqlite3": "^11.10.0",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "multer": "^2.0.0"
   }
 }
