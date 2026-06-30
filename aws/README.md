@@ -9,6 +9,9 @@ For report evidence screenshots and redaction guidance, see
 
 For CloudTrail setup and test evidence, see [cloudtrail.md](cloudtrail.md).
 
+For the completed S3 upload integration report, see
+[../docs/s3-integration-report.md](../docs/s3-integration-report.md).
+
 Initial AWS topics to document later:
 
 - Account and region assumptions.
