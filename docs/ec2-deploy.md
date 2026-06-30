@@ -186,6 +186,24 @@ Current log groups:
 
 CloudWatch metrics also show EC2 memory and disk usage from the agent.
 
+## S3 IAM Policy Test
+
+The EC2 instance uses the IAM role `securefarm-ec2-cloudwatch-role`. This role
+was updated with an S3 upload policy for the bucket `securefarm-uploads-1111`.
+
+The policy test was completed successfully from the EC2 instance using AWS CLI.
+No `aws configure` setup was run, and no AWS access keys were stored in `.env`;
+AWS CLI used the temporary credentials provided by the attached instance role.
+
+Test commands:
+
+```bash
+echo "securefarm s3 test" > /tmp/s3-test.txt
+aws s3 cp /tmp/s3-test.txt s3://securefarm-uploads-1111/test/s3-test.txt
+aws s3 ls s3://securefarm-uploads-1111/test/
+aws s3 rm s3://securefarm-uploads-1111/test/s3-test.txt
+```
+
 ## CloudWatch Alarm Testing
 
 CPU alarm notification testing was completed using an SNS notification test and
