@@ -1,6 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { apiFetch } from '../api.js';
+import { apiFetch, apiUpload } from '../api.js';
+
+function formatBytes(n) {
+  if (n == null) return '—';
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+  return `${(n / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 const emptySeason = {
   season_name: '',
@@ -19,6 +26,10 @@ export default function PlotDetail() {
   const [form, setForm] = useState(emptySeason);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState(null);
+  const [uploads, setUploads] = useState([]);
+  const [uploadError, setUploadError] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef(null);
 
   function load() {
     apiFetch(`/api/plots/${id}`)
@@ -26,7 +37,40 @@ export default function PlotDetail() {
       .catch((err) => setError(err.message));
   }
 
-  useEffect(() => { load(); }, [id]);
+  function loadUploads() {
+    apiFetch(`/api/plots/${id}/uploads`)
+      .then((data) => setUploads(data.uploads))
+      .catch((err) => setUploadError(err.message));
+  }
+
+  useEffect(() => { load(); loadUploads(); }, [id]);
+
+  async function handleUpload(e) {
+    e.preventDefault();
+    setUploadError(null);
+    const file = fileRef.current?.files?.[0];
+    if (!file) { setUploadError('Choose a file to upload.'); return; }
+    setUploading(true);
+    try {
+      await apiUpload(`/api/plots/${id}/uploads`, file);
+      if (fileRef.current) fileRef.current.value = '';
+      loadUploads();
+    } catch (err) {
+      setUploadError(err.message);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function handleDeleteUpload(uploadId) {
+    setUploadError(null);
+    try {
+      await apiFetch(`/api/plots/${id}/uploads/${uploadId}`, { method: 'DELETE' });
+      loadUploads();
+    } catch (err) {
+      setUploadError(err.message);
+    }
+  }
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -128,6 +172,66 @@ export default function PlotDetail() {
                   <td>{s.start_date || '—'}</td>
                   <td>{s.expected_harvest_date || '—'}</td>
                   <td><span className={`badge badge-${s.status}`}>{s.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+
+      <section className="panel">
+        <div className="panel-head">
+          <h2>Attachments</h2>
+        </div>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Upload one file at a time (.txt, .csv, .jpg, .png, .pdf — max 5 MB).
+          Files are stored privately in S3; only metadata is shown here.
+        </p>
+
+        {uploadError && <div className="form-error">{uploadError}</div>}
+
+        <form className="upload-bar" onSubmit={handleUpload}>
+          <input
+            type="file"
+            ref={fileRef}
+            accept=".txt,.csv,.jpg,.jpeg,.png,.pdf"
+          />
+          <button type="submit" className="primary-btn" disabled={uploading}>
+            {uploading ? 'Uploading…' : 'Upload'}
+          </button>
+        </form>
+
+        {uploads.length === 0 ? (
+          <p className="muted">No attachments for this plot.</p>
+        ) : (
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>S3 key</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Uploaded</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {uploads.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.original_name}</td>
+                  <td><code className="s3-key">{u.s3_key}</code></td>
+                  <td>{u.content_type || '—'}</td>
+                  <td>{formatBytes(u.size_bytes)}</td>
+                  <td>{u.created_at}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="link-btn"
+                      onClick={() => handleDeleteUpload(u.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -60,5 +60,17 @@ function migrate(database) {
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS plot_uploads (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      plot_id INTEGER NOT NULL REFERENCES plots(id) ON DELETE CASCADE,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      original_name TEXT NOT NULL,
+      s3_bucket TEXT NOT NULL,
+      s3_key TEXT NOT NULL,
+      content_type TEXT,
+      size_bytes INTEGER,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
 }

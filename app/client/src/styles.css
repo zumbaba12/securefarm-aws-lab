@@ -172,6 +172,11 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-500);
 .notes-block h3 { margin: 0 0 0.4rem; font-size: 0.85rem; color: var(--muted); }
 .notes-body { line-height: 1.5; }
 
+/* ---- Uploads ---- */
+.upload-bar { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.upload-bar input[type="file"] { font-size: 0.82rem; color: var(--ink); }
+.s3-key { font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+
 /* ---- Login ---- */
 .login-screen {
   min-height: 100vh;
