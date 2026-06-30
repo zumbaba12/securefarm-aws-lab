@@ -105,9 +105,15 @@ NODE_ENV=production
 HOST=127.0.0.1
 PORT=4000
 SECUREFARM_DB=/var/lib/securefarm/securefarm.sqlite
+AWS_REGION=ap-southeast-2
+SECUREFARM_UPLOAD_BUCKET=securefarm-uploads-1111
+SECUREFARM_UPLOAD_PREFIX=plot-uploads
+SECUREFARM_UPLOAD_MAX_BYTES=5242880
 ```
 
 `NODE_ENV=production` hides the demo credential helper endpoint and UI affordance. The intentional SQL injection, stored XSS, and weak password model remain in this lab version.
+
+The `SECUREFARM_UPLOAD_*` and `AWS_REGION` values configure the plot-attachment S3 uploads. No AWS access keys are placed in this file: the app uses the AWS SDK default provider chain, which on EC2 resolves to the attached instance role (`securefarm-ec2-cloudwatch-role`) — the same role used in the S3 IAM policy test below.
 
 ## API Service
 
@@ -203,6 +209,26 @@ aws s3 cp /tmp/s3-test.txt s3://securefarm-uploads-1111/test/s3-test.txt
 aws s3 ls s3://securefarm-uploads-1111/test/
 aws s3 rm s3://securefarm-uploads-1111/test/s3-test.txt
 ```
+
+## Plot Upload Smoke Check (owner)
+
+After deploying the upload feature, verify end-to-end from the app. The app and
+AWS CLI both use the instance role, so no access keys are involved.
+
+1. Log in to the app.
+2. Open a plot detail page (`/plots/<id>`).
+3. In the **Attachments** panel, upload a small `.txt` file.
+4. Confirm the upload appears in the attachment list (filename, S3 key, type,
+   size, timestamp).
+5. Confirm the object exists in S3 from the EC2 instance:
+
+```bash
+aws s3 ls s3://securefarm-uploads-1111/plot-uploads/
+```
+
+The listed key should match `plot-uploads/user-<userId>/plot-<plotId>/<uuid>-<file>`.
+A disallowed type (e.g. `.html`) or a file over 5 MiB should be rejected by the
+app with a generic error.
 
 ## CloudWatch Alarm Testing
 
